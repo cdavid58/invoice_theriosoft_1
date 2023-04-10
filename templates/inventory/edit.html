@@ -8,36 +8,38 @@
 	                <div class="card-content">
 	                    <div class="card-body">
 	                    	<div class="row justify-content-center">
-	                    		<h4 class="text-center">Agrega un producto</h4><hr>
+	                    		<h4 class="text-center">Editar un producto</h4><hr>
 	                    	</div>
 	                    	<br>
 	                        <div class="row ">
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group mb-3">
 	                                    <span class="input-group-text">Código</span>
-	                                    <input type="text"  name="code" class="form-control code" autofocus>
+	                                    <input type="text"  name="code" class="form-control code" autofocus value="{{i.code}}">
 	                                </div>
 	                            </div>
 	                            <div class="col-sm-3 mb-1">
 	                                <div class="input-group">
 	                                    <span class="input-group-text">Nombre</span>
-	                                    <input type="text"  name="article" class="form-control">
+	                                    <input type="text"  name="article" class="form-control" value="{{i.article}}">
 
 	                                </div>
 	                            </div>
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group mb-3">
 	                                    <span class="input-group-text">Cantidad</span>
-	                                    <input type="text" class="form-control" name="quanty">
+	                                    <input type="text" class="form-control" name="quanty" value="{{i.quanty}}">
 	                                </div>
 	                            </div>
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group">
 	                                    <span class="input-group-text">Categoria</span>
 	                                	<select class="form-select" name="category">
-	                                    	<option>Seleccione</option>
-	                                    	{% for i in category %}
-	                                    		<option value="{{i.pk}}">{{i.name}}</option>
+	                                    	<option value="{{i.category.pk}}">{{i.category.name}}</option>
+	                                    	{% for c in category %}
+	                                    		{% if c.name != i.category.name %}
+	                                    			<option value="{{c.pk}}">{{c.name}}</option>
+	                                    		{% endif %}
 	                                    	{% endfor %}
 	                                    </select>
 	                                </div>
@@ -46,9 +48,19 @@
 	                                <div class="input-group">
 	                                    <span class="input-group-text">IVA</span>
 	                                	<select class="form-select" name="tax">
-	                                    	<option>0</option>
-	                                    	<option>5</option>
-	                                    	<option>19</option>
+	                                    	{% if i.tax == 0 %}
+		                                    	<option value="{{i.tax}}">{{i.tax}}</option>
+		                                    	<option>5</option>
+		                                    	<option>19</option>
+	                                    	{% elif i.tax == 5 %}
+	                                    		<option value="{{i.tax}}">{{i.tax}}</option>
+		                                    	<option>0</option>
+		                                    	<option>19</option>
+	                                    	{% else %}
+	                                    		<option value="{{i.tax}}">{{i.tax}}</option>
+		                                    	<option>0</option>
+		                                    	<option>5</option>
+	                                    	{% endif %}
 	                                    </select>
 	                                </div>
 	                            </div>
@@ -57,48 +69,44 @@
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group">
 	                                    <span class="input-group-text">Costo</span>
-	                                    <input type="text" class="form-control" name="cost">
+	                                    <input type="text" class="form-control" name="cost" value="{{i.cost}}">
 	                                </div>
 	                            </div>
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group">
 	                                    <span class="input-group-text">Precio 1</span>
-	                                    <input type="text" class="form-control" name="price_1">
+	                                    <input type="text" class="form-control" name="price_1" value="{{i.price_1}}">
 	                                </div>
 	                            </div>
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group">
 	                                    <span class="input-group-text">Precio 2</span>
-	                                    <input type="text" class="form-control" name="price_2">
+	                                    <input type="text" class="form-control" name="price_2" value="{{i.price_2}}">
 	                                </div>
 	                            </div>
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group">
 	                                    <span class="input-group-text">Precio 3</span>
-	                                    <input type="text" class="form-control" name="price_3">
+	                                    <input type="text" class="form-control" name="price_3" value="{{i.price_3}}">
 	                                </div>
 	                            </div>
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group">
 	                                    <span class="input-group-text">Precio 4</span>
-	                                    <input type="text" class="form-control" name="price_4">
+	                                    <input type="text" class="form-control" name="price_4" value="{{i.price_4}}">
 	                                </div>
 	                            </div>
 	                            <div class="col-sm-2 mb-1">
 	                                <div class="input-group">
 	                                    <span class="input-group-text">Precio 5</span>
-	                                    <input type="text" class="form-control" name="price_5">
+	                                    <input type="text" class="form-control" name="price_5" value="{{i.price_5}}">
 	                                </div>
 	                            </div>
 	                        </div><br>
 	                        <div class="row">
 						    	<div class="col-2">
-						    		<button type="button" class="btn btn-primary save_product">Grabar producto</button>
-						    	</div>
-						    	<div class="col-2">
-						    		<button type="button" class="btn btn-success clean">Limpiar Campos</button>
-						    	</div>
-						    	<div class="col-2">
+						    		<button type="button" class="btn btn-primary update_product">Grabar producto</button>
+						    	</div>						    	<div class="col-2">
 						    		<button type="button" class="btn btn-danger return">Lista de producto</button>
 						    	</div>
 						    </div>
@@ -119,18 +127,19 @@
 				location.href = "{% url 'List_Inventory' %}"
 			})
 
-			$(".clean").click(function(){
-				$("form select").each(function() { this.selectedIndex = 0 });
-				$("form input[type=text]").each(function() { this.value = '' });
-				$(".code").focus()
-			})
-
-			$(".save_product").click(function(){
+			$(".update_product").click(function(){
 				form = $(".form").serialize()
+				$.gritter.add({
+                    title: 'Procesando...',
+                    text: "Actualizando producto",
+                    time: 3000,
+                    position: 'center'
+                })
 				$.ajax({
 					data:form,
 					success: function(e){
 						data = JSON.parse(e)
+						console.log(data)
 						if(data.result){
 							$.gritter.add({
 			                    title: 'Exito',
@@ -138,10 +147,6 @@
 			                    time: 3000,
 			                    position: 'center'
 			                })
-
-			                $("form select").each(function() { this.selectedIndex = 0 });
-     						$("form input[type=text]").each(function() { this.value = '' });
-     						$(".code").focus()
 						}
 						else{
 							$.gritter.add({

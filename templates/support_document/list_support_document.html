@@ -96,7 +96,7 @@
 		                                `<btn class="dian btn btn-warning"  data-toggle="tooltip" title="Some tooltip text!" id="${row.number}">
 		                                    DIAN
 		                                 </btn>
-		                                 <button class="dian btn btn-danger"  data-toggle="tooltip" title="Some tooltip text!" id="${row.number}">
+		                                 <button class="btn btn-danger delete" id="${row.number}">
 		                                    Eliminar
 		                                 </button>
 		                              `:
@@ -130,6 +130,24 @@
 		    order: [[1, 'desc']]
 		  });
 
+            $(document).on('click',".delete",function(){
+                id = this.id
+                $(this).closest('tr').remove();
+                $.ajax({
+                    url:"{% url 'Delete_Support_Document' %}",
+                    data:{'number':id},
+                    success:function(e){
+                        if(e == 'True'){
+                            $.gritter.add({
+                                title: 'Mensaje',
+                                text: 'Documento soporte eliminado con exito',
+                                time: 3000,
+                                position: 'center'
+                            });
+                        }
+                    }
+                })
+            })
         	$(document).on('click','.credit_note',function(){
                 if(!localStorage.getItem('resolution')){
                     id = this.id

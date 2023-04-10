@@ -93,20 +93,42 @@
                         <div class="row ">
                             <div class="col-sm-3 mb-1">
                                 <div class="input-group mb-3">
-                                    <select class="form-select inventory">
-                                        <option>Elija el producto</option>
-                                        {% for i in inventory %}
-                                            <option value="{{i.pk}}">{{i.article}}</option>
-                                        {% endfor %}
-                                    </select>
+                                    {% if request.session.type_document == 1 %}
+                                        <select class="form-select inventory">
+                                            <option>Elija el producto</option>
+                                            {% for i in inventory %}
+                                                <option value="{{i.pk}}">{{i.article}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        <span class="input-group-text">Digite el servicio</span>
+                                        <input type="text" class="form-control inventory">
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="col-sm-2 mb-1">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text">Precio</span>
-                                    <input type="text" class="form-control price" disabled>
+                            {% if request.session.type_document == 1 %}
+                                <div class="col-sm-2 mb-1">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text">Stock</span>
+                                        <input type="text" class="form-control stock" disabled>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
+                            {% if request.session.type_document == 1 %}
+                                <div class="col-sm-2 mb-1">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text">Precio</span>
+                                        <input type="text" class="form-control price" disabled>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="col-sm-2 mb-1">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text">Precio</span>
+                                        <input type="text" class="form-control price">
+                                    </div>
+                                </div>
+                            {% endif %}
                             <div class="col-sm-2 mb-1">
                                 <div class="input-group mb-3">
                                     <span class="input-group-text">Cantidad</span>
@@ -221,6 +243,7 @@
     list_product = []
     product = "";
     subtotal = 0;
+    code_service = 1
 
     $(document).ready(function(){
 
@@ -245,33 +268,66 @@
                 }
             })
         })
-
         $(".inventory").change(function(){
-            $.ajax({
-                url:"{% url 'GetProduct' %}",
-                data: {'pk':$(".inventory").val()},
-                success: function(data){
-                    obj = JSON.parse(data)
-                    $(".price").val(obj.price_1)
-                    $(".quanty").focus()
-                    product = obj
-                    list_product.push(obj)
-                    console.log(obj)
-                }
-            })
+            if(parseInt('{{request.session.type_document}}') == 1){
+                $.ajax({
+                    url:"{% url 'GetProduct' %}",
+                    data: {'pk':$(".inventory").val()},
+                    success: function(data){
+                        obj = JSON.parse(data)
+                        $(".price").val(obj.price_1)
+                        $(".stock").val(obj.stock)
+                        $(".quanty").focus()
+                        product = obj
+                        list_product.push(obj)
+                        console.log(obj)
+                    }
+                })
+            }
         })
 
         $(".save_invoice").click(function(e){
             if($(".row_invoice").find("tr").length > 0){
-                $(".aleert").click()
-                var table = $('.data_table').tableToJSON();
-                $.ajax({
-                    url: '{% url "Save_Invoice" %}',
-                    data: JSON.stringify(table),
-                    success:function(data){
-                        location.reload(true)
+                if($(".client").val() != 'Elija el cliente'){
+                    if($(".payment_methods").val() != 'Elija el Método de Pago'){
+                        $(".aleert").click()
+                        var table = $('.data_table').tableToJSON();
+                        $.ajax({
+                            url: '{% url "Save_Invoice" %}',
+                            data: JSON.stringify(table),
+                            success:function(data){
+                                if(data == 'True'){
+                                    location.reload(true)
+                                }
+                                else{
+                                    $.gritter.add({
+                                        title: 'Oops!',
+                                        text: 'No se pudo realizar la factura',
+                                        time: 3000,
+                                        position: 'center'
+                                    });
+                                    $(".cerrar").click()
+                                }
+                            }
+                        })
                     }
-                })
+                    else{
+                        $.gritter.add({
+                            title: 'Oops!',
+                            text: 'Debe elejir un metodo de pago',
+                            time: 3000,
+                            position: 'center'
+                        });
+                    }
+                }
+                else{
+                    $.gritter.add({
+                        title: 'Oops!',
+                        text: 'Debe elejir un cliente',
+                        time: 3000,
+                        position: 'center'
+                    });
+                }
             }
             else{
                 $.gritter.add({
@@ -283,24 +339,78 @@
             }
         })
 
+        $(document).on('click','.delete',function(){
+            id = this.id
+            $(this).closest('tr').remove();
+            CalculateTotals()
+        })
+
         $(".quanty").keypress(function(e){
             var code = (e.keyCode ? e.keyCode : e.which);
             quanty = parseInt($(".quanty").val())
             if(code==13){
-                if( quanty != ''){
-                    if(!productExist(product)){
-                        subtotal = quanty * parseInt(product.price_1)
+                if( quanty != '' && parseInt($(".price").val()) > 0){
+                    if(!productExist(product) && parseInt('{{request.session.type_document}}') == 1 && parseInt($(".stock").val()) > 0){
+                        if(quanty <= parseInt($(".stock").val())){
+                            subtotal = quanty * parseInt(product.price_1)
+                            $(".row_invoice").append(`
+                                <tr>
+                                  <td scope="row">${product.code}</td>
+                                  <td>${product.article}</td>
+                                  <td>${quanty}</td>
+                                  <td>${product.price_1}</td>
+                                  <td>${subtotal}</td>
+                                  <td><button class="btn btn-primary delete" id="${product.code}">Eliminar</button></td>
+                                </tr>
+                            `)
+                            $(".stock").val(parseInt($(".stock").val() - 1))
+                        }
+                        else{
+                            $.gritter.add({
+                                title: 'Oops!',
+                                text: 'No puede facturar más de la cantidad que tiene en el stock',
+                                time: 2000,
+                                position: 'center'
+                            });
+                        }
+                    }
+                    else if(parseInt('{{request.session.type_document}}') == 11){
+                        console.log("Entre 2")
+                        subtotal = quanty * parseInt($('.price').val())
                         $(".row_invoice").append(`
                             <tr>
-                              <td scope="row">${product.code}</td>
-                              <td>${product.article}</td>
+                              <td scope="row">${code_service}</td>
+                              <td>${$('.inventory').val()}</td>
                               <td>${quanty}</td>
-                              <td>${product.price_1}</td>
+                              <td>${parseInt($('.price').val())}</td>
                               <td>${subtotal}</td>
+                              <td><button class="btn btn-primary delete" id="${code_service}">Eliminar</button></td>
                             </tr>
-                        `)
+                        `)   
+                        code_service += 1
+                        $(".price").val('')
+                        $(".quanty").val('')
+                        $(".inventory").val('')
+                        $('.inventory').focus()
                     }
+                    else if(parseInt($(".stock").val()) <= 0){
+                        $.gritter.add({
+                            title: 'Oops!',
+                            text: 'No tiene stock',
+                            time: 2000,
+                            position: 'center'
+                        });
+                    }
+                
                     CalculateTotals()
+                }
+                else{
+                    $.gritter.add({
+                        title: 'Oops!',
+                        text: 'No puede facturar con precio CERO',
+                        time: 2000,
+                        position: 'center'
+                    });
                 }
                 $(".quanty").val('')
             }
@@ -323,11 +433,13 @@
             console.log($(celdas[0]).text())
             if(parseInt($(celdas[0]).text()) == parseInt(product.code)){
                 quanty = parseInt($(".quanty").val()) + parseInt($(celdas[2]).text())
-                subtotal = quanty * parseInt(product.price_1)
-                $(celdas[2]).text(quanty)
-                $(celdas[4]).text(subtotal)
-                result = true
-                break
+                if(quanty <= parseInt($(".stock").val())){
+                    subtotal = quanty * parseInt(product.price_1)
+                    $(celdas[2]).text(quanty)
+                    $(celdas[4]).text(subtotal)
+                    result = true
+                    break
+                }
             }            
         }
         return result

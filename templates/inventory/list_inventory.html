@@ -45,10 +45,10 @@
                                 <td>{{i.price_4}}</td>
                                 <td>{{i.price_5}}</td>
                                 <td>
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary edit" id="{{i.pk}}">
                                         Editar
                                     </button>
-                                    <button class="btn btn-danger">
+                                    <button class="btn btn-danger delete" id="{{i.pk}}">
                                         Eliminar
                                     </button>
                                 </td>
@@ -70,6 +70,28 @@
 		$(document).ready(function(){
 			$(".add").click(function(){
                 location.href = "{% url 'Add_Product' %}"
+            })
+
+            $(".edit").click(function(){
+                id = this.id
+                location.href = "http://localhost:8000/inventory/Edit_Product/"+id
+            })
+
+            $(".delete").click(function(){
+                id = this.id
+                $(this).closest('tr').remove();
+                $.ajax({
+                    url:"{% url 'Delete_Product' %}",
+                    data:{'pk':id},
+                    success: function(e) {
+                        $.gritter.add({
+                            title: 'Exito',
+                            text: 'Producto eliminado con exito.',
+                            time: 3000,
+                            position: 'center'
+                        })
+                    }
+                })
             })
 		})
 	</script>

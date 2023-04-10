@@ -92,6 +92,16 @@ def Payment_Form(request):
 			request.session['paymentForm'] = 1
 		return HttpResponse('')
 
+def Discount_Inventory(request,pk,quanty):
+	try:
+		i = Inventory.objects.get(code = pk,company= Company.objects.get(pk = request.session['pk_company']))
+		i.quanty -= int(quanty)
+		i.save()
+		return True
+	except Inventory.DoesNotExist as e:
+		print(e)
+		return False
+
 def Save_Invoice(request):
 	company = Company.objects.get(pk = request.session['pk_company'])
 	r = Resolution_Elec.objects.get(company= Company.objects.get(pk = request.session['pk_company']))
@@ -100,9 +110,14 @@ def Save_Invoice(request):
 		r = Resolution_DS.objects.get(company= Company.objects.get(pk = request.session['pk_company']))
 		consecutive = Consecutive_DS.objects.get(company = company)
 	data = request.GET
+	discountP = False
 	for i in data:
 		_data = json.loads(i)
 		for j in _data:
+			discountP = Discount_Inventory(request,j['Código'],j['Cantidad'])
+			if request.session['type_document'] != 11:
+				if not discountP:
+					break
 			Save_(request,
 				{
 				  "prefix": r.prefix,
@@ -121,10 +136,12 @@ def Save_Invoice(request):
 				  "company": request.session['pk_company']
 				}
 			)
-	consecutive.number += 1
-	consecutive.save()
+			
+	if discountP:
+		consecutive.number += 1
+		consecutive.save()
 
-	return HttpResponse(True)
+	return HttpResponse(discountP)
 
 def Save_(request,data):
 	url = "http://localhost:8000/api/Create_Invoice/"
@@ -134,16 +151,62 @@ def Save_(request,data):
 	}
 	response = requests.request("POST", url, headers=headers, data=payload)
 
-
-
 def Delete_Invoice(request):
 	if request.is_ajax():
 		try:
-			invoice = Invoice.objects.filter(number = request.GET['number'],company = Company.objects.get(pk = request.session['pk_company']))
-			for i in invoice:
-				i.delete()
+			company = Company.objects.get(pk = request.session['pk_company'])
+			c = Consecutive.objects.get(company = company)
+			invoice = Invoice.objects.filter(number = request.GET['number'], company = company ,typeDocumentId = request.session['type_document'])
+			n = c.number - 1
+			if n == invoice.last().number:
+				for i in invoice:
+					i.delete()
+				result = True
+				c.number -= 1
+				c.save()
+			else:
+				for i in invoice:
+					i.delete()
+				result = True
+
 		except Exception as e:
 			print(e)
 		return HttpResponse('')
+
+
+
+
+def Delete_Support_Document(request):
+	if request.is_ajax():
+		try:
+			company = Company.objects.get(pk = request.session['pk_company'])
+			c = Consecutive_DS.objects.get(company = company)
+			invoice = Invoice.objects.filter(number = request.GET['number'], company = company ,typeDocumentId = request.session['type_document'])
+			n = c.number - 1
+			print(n)
+			if n == invoice.last().number:
+				for i in invoice:
+					i.delete()
+				result = True
+				c.number -= 1
+				c.save()
+			else:
+				for i in invoice:
+					i.delete()
+				result = True
+
+		except Exception as e:
+			print(e)
+			result = False
+		return HttpResponse(result)
+
+
+
+
+
+
+
+
+
 
 

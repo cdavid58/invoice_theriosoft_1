@@ -4,9 +4,6 @@ from company.models import Company
 class Category(models.Model):
 	name = models.CharField(max_length = 40,unique = True)
 
-	def __str__(self):
-		return self.name
-
 class Inventory(models.Model):
 	code = models.IntegerField()
 	code_int = models.IntegerField()
@@ -20,3 +17,7 @@ class Inventory(models.Model):
 	price_5 = models.IntegerField(default = 0)
 	category = models.ForeignKey(Category, on_delete = models.CASCADE)
 	company = models.ForeignKey(Company, on_delete = models.CASCADE)
+	quanty = models.IntegerField(default = 0)
+
+	def __str__(self):
+		return self.article+' - '+self.company.name_company

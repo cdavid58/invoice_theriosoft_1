@@ -135,6 +135,16 @@
                 $.ajax({
                     url:"{% url 'Delete_Invoice' %}",
                     data:{'number':id},
+                    success:function(e){
+                        if(e == 'True'){
+                            $.gritter.add({
+                                title: 'Mensaje',
+                                text: 'Documento soporte eliminado con exito',
+                                time: 3000,
+                                position: 'center'
+                            });
+                        }
+                    }
                 })
             })
 

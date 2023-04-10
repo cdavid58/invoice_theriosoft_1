@@ -9,5 +9,6 @@ urlpatterns=[
 	url(r'^Save_Invoice/$',Save_Invoice,name="Save_Invoice"),
 	url(r'^Payment_Form/$',Payment_Form,name="Payment_Form"),
 	url(r'^Delete_Invoice/$',Delete_Invoice,name="Delete_Invoice"),
+	url(r'^Delete_Support_Document/$',Delete_Support_Document,name="Delete_Support_Document"),
 	url(r'^Viewer_Invoice/(\d+)/$',Viewer_Invoice,name="Viewer_Invoice"),
 ]
