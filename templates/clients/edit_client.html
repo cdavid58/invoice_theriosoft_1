@@ -1,0 +1,162 @@
+{% extends '../base.html' %}
+{% block content %}
+<form class="form">
+	<section id="multiple-addons">
+	    <div class="row">
+	        <div class="col-12">
+	            <div class="card">
+	                <div class="card-content">
+	                    <div class="card-body">
+	                    	<div class="row justify-content-center">
+	                    		<h4 class="text-center">Edición de Cliente {{c.name}}</h4><hr>
+	                    	</div>
+	                    	<br>
+	                        <div class="row ">
+	                            <div class="col-sm-3 mb-1">
+	                                <div class="input-group mb-3">
+	                                    <span class="input-group-text">Doc de Identidad</span>
+	                                    <input type="text"  name="docI" class="form-control" value="{{c.documentI}}-{{c.dv}}">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-4 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Razon Social</span>
+	                                    <input type="text"  name="name" class="form-control" value="{{c.name}}">
+
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-4 mb-1">
+	                                <div class="input-group mb-3">
+	                                    <span class="input-group-text">Direccion</span>
+	                                    <input type="text" class="form-control" name="address" value="{{c.address}}">
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="row justify-content-center">
+	                            
+	                            <div class="col-sm-3 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Teléfono</span>
+	                                    <input type="text"  name="phone" class="form-control" value="{{c.phone}}">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-6 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Corre Electrónico</span>
+	                                    <input type="text" class="form-control" name="email" value="{{c.email}}">
+
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-3 mb-1">
+	                                <div class="input-group">
+	                                	<span class="input-group-text">Municipio</span>
+	                                	<select class="form-select payment_methods" name="municipality">
+	                                    	<option value="{{c.municipality.id}}">{{c.municipality.name}}</option>
+	                                    	{% for i in municipality %}
+	                                    		{% if i.id != c.municipality.id %}
+	                                    			<option value="{{i.id}}">{{i.name}}</option>
+	                                    		{% endif %}
+	                                    	{% endfor %}
+	                                    </select>
+	                                </div>
+	                            </div>
+	                        </div><br>
+	                        <div class="row">
+	                            <div class="col-sm-3 mb-1">
+	                                <div class="input-group">
+	                                	<span class="input-group-text">Tipo de documento</span>
+	                                    <select class="form-select payment_methods" name="typeDocumentId">
+	                                    	<option value="{{c.typeDocumentId.id}}">{{c.typeDocumentId.name}}</option>
+	                                    	{% for i in tf %}
+	                                    		{% if i.id != c.typeDocumentId.id %}
+	                                    			<option value="{{i.id}}">{{i.name}}</option>
+	                                    		{% endif %}
+	                                    	{% endfor %}
+	                                    </select>
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-3 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Tipo de Organizacion</span>
+	                                    <select class="form-select payment_methods" name="typeOrganization">
+	                                    	<option value="{{c.typeOrganization.id}}">{{c.typeOrganization.name}}</option>
+	                                    	{% for i in to %}
+	                                    		{% if i.id != c.typeOrganization.id %}
+	                                    			<option value="{{i.id}}">{{i.name}}</option>
+	                                    		{% endif %}
+	                                    	{% endfor %}
+	                                    </select>
+
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-4 mb-1">
+	                                <div class="input-group">
+	                                	<span class="input-group-text">Tipo de Regimen</span>
+	                                	<select class="form-select payment_methods" name="tpyeRegimen">
+	                                    	<option value="{{c.tpyeRegimen.id}}">{{c.tpyeRegimen.name}}</option>
+	                                    	{% for i in tr %}
+	                                    		{% if i.id != c.tpyeRegimen.id %}
+	                                    			<option value="{{i.id}}">{{i.name}}</option>
+	                                    		{% endif %}
+	                                    	{% endfor %}
+	                                    </select>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <br>
+	                    	<div class="row">
+						    	<div class="col-2">
+						    		<button type="button" class="btn btn-primary update">Actualizar</button>
+						    	</div>
+						    	<div class="col-2">
+						    		<button type="button" class="btn btn-danger return">Regresar</button>
+						    	</div>
+						    </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</section>
+</form>
+{% endblock %}
+{% block script %}
+
+	<script>
+		$(document).ready(function(){
+
+			$(".return").click(function(){
+				location.href = "{% url 'List_Client' %}"
+			})
+
+			$(".update").click(function(){
+				form = $(".form").serialize()
+				$.ajax({
+					url:"{% url 'Update_Client' %}",
+					data:form,
+					success: function(e){
+						if(e == 'True'){
+							$.gritter.add({
+			                    title: 'Exito',
+			                    text: 'Cliente actualizado con exito',
+			                    time: 3000,
+			                    position: 'center'
+			                })
+						}
+						else{
+							$.gritter.add({
+			                    title: 'Oops!',
+			                    text: 'Corrija los errores',
+			                    time: 3000,
+			                    position: 'center'
+			                })
+						}
+					}
+				})
+			})
+		})
+	</script>
+
+{% endblock %}
+
+

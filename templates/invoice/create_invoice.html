@@ -1,0 +1,355 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .div1 {
+         overflow:scroll;
+         height:400px;
+         width:100%;
+    }
+</style>
+
+<section id="multiple-addons">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-body">
+                    	<div class="row justify-content-center">
+                    		<h4 class="text-center">{% if request.session.type_document == 1 %}Factura Electrónica N°{{c}}{% else %}Documento Soporte N°{{c}}{% endif %}</h4><hr>
+                    	</div>
+                    	<br>
+                        <div class="row ">
+                            <div class="col-sm-3 mb-1">
+                                <div class="input-group mb-3">
+                                    <select class="form-select client">
+                                    	<option>Elija el cliente</option>
+                                    	{% for i in clients %}
+                                            <option value="{{i.pk}}">{{i.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 mb-1">
+                                <div class="input-group">
+                                    <span class="input-group-text">Doc de Identidad</span>
+                                    <input type="text"  id="docI" class="form-control" disabled>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-5 mb-1">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Email</span>
+                                    <input type="text" class="form-control" id="email" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            
+                            <div class="col-sm-3 mb-1">
+                                <div class="input-group">
+                                    <span class="input-group-text">Teléfono</span>
+                                    <input type="text"  id="phone" class="form-control" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-1">
+                                <div class="input-group">
+                                    <span class="input-group-text">Domicilio</span>
+                                    <input type="text" class="form-control" id="address"  data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Editar Empleado" disabled>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-3 mb-1">
+                                <div class="input-group">
+                                	<select class="form-select payment_methods">
+                                    	<option>Elija el Método de Pago</option>
+                                    	<option value="31">Transferencia Débito</option>
+                                    	<option value="10">Efectivo</option>
+                                    	<option value="42">Consiganción bancaria</option>
+                                    	<option value="23">Cheque bancario</option>
+                                    	<option value="30">Transferecia Crédito</option>
+                                    	<option value="75">Acuerdo mutuo</option>
+                                    	<option value="47">Transferencia Débito Bancaria</option>
+                                    	<option value="34">Pago y depósito pre acordado (PPD)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="multiple-addons">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="row ">
+                            <div class="col-sm-3 mb-1">
+                                <div class="input-group mb-3">
+                                    <select class="form-select inventory">
+                                        <option>Elija el producto</option>
+                                        {% for i in inventory %}
+                                            <option value="{{i.pk}}">{{i.article}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 mb-1">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Precio</span>
+                                    <input type="text" class="form-control price" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 mb-1">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Cantidad</span>
+                                    <input type="text" class="form-control quanty" id="email">
+                                </div>
+                            </div>
+                            <div class="col-sm-1 mb-1">
+                                <button class="btn btn-primary save_invoice">
+                                    Facturar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="table-responsive">
+    <table class="table data_table table-striped table-sm table_invoice">
+        <thead>
+        <tr>
+          <th scope="col">Código</th>
+          <th scope="col">Descripcion</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Precio</th>
+          <th scope="col">SubTotal</th>
+        </tr>
+        </thead>
+        <tbody class="row_invoice"></tbody>
+    </table>
+</div>
+
+<br><br>
+
+<section class="section">
+    <div class="row" id="basic-table">
+        <div class="col-3 row align-items-center">            
+        </div>
+        <div class="col-12 col-md-4 ms-md-auto" style="text-align: center;">
+            <div class="card">
+                <div class="card-content">
+                    <!-- Table with no outer spacing -->
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:left;" class="text-bold-500">SubTotal:</td>
+                                    <td style="text-align:right;">$<span class="subtotal">0</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;" class="text-bold-500">Impuestos:</td>
+                                    <td style="text-align:right;">$0</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;" class="text-bold-500">IC:</td>
+                                    <td style="text-align:right;">$0</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;" class="text-bold-500">Retenciones:</td>
+                                    <td style="text-align:right;">$0</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;" class="text-bold-500">Descuento:</td>
+                                    <td style="text-align:right;">$0</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:left;" class="text-bold-500">Total:</td>
+                                    <td style="text-align:right;">$<span class="total">0</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Button trigger modal -->
+<button type="button" hidden class="btn btn-primary aleert" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  Launch static backdrop modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">ALERTA</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Enviando la Factura
+      </div>
+      <div class="modal-footer" hidden>
+        <button type="button" class="btn btn-secondary cerrar" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'jquery.tabletojson.min.js' %}"></script>
+<script>
+    list_product = []
+    product = "";
+    subtotal = 0;
+
+    $(document).ready(function(){
+
+        $(".payment_methods").change(function(){
+            $.ajax({
+                url: "{% url 'Payment_Form' %}",
+                data: {'number' : $(".payment_methods").val()}
+            })
+        })
+
+        $(".client").change(function(){
+            $.ajax({
+                url:"{% url 'GetClient' %}",
+                data:{'pk':$(".client").val()},
+                success:function(data){
+                    obj = JSON.parse(data)
+                    $("#docI").val(obj.documentI)
+                    $("#email").val(obj.email)
+                    $("#phone").val(obj.phone)
+                    $("#address").val(obj.address)
+                    
+                }
+            })
+        })
+
+        $(".inventory").change(function(){
+            $.ajax({
+                url:"{% url 'GetProduct' %}",
+                data: {'pk':$(".inventory").val()},
+                success: function(data){
+                    obj = JSON.parse(data)
+                    $(".price").val(obj.price_1)
+                    $(".quanty").focus()
+                    product = obj
+                    list_product.push(obj)
+                    console.log(obj)
+                }
+            })
+        })
+
+        $(".save_invoice").click(function(e){
+            if($(".row_invoice").find("tr").length > 0){
+                $(".aleert").click()
+                var table = $('.data_table').tableToJSON();
+                $.ajax({
+                    url: '{% url "Save_Invoice" %}',
+                    data: JSON.stringify(table),
+                    success:function(data){
+                        location.reload(true)
+                    }
+                })
+            }
+            else{
+                $.gritter.add({
+                    title: 'Oops!',
+                    text: 'No puede facturar en ceros',
+                    time: 2000,
+                    position: 'center'
+                });
+            }
+        })
+
+        $(".quanty").keypress(function(e){
+            var code = (e.keyCode ? e.keyCode : e.which);
+            quanty = parseInt($(".quanty").val())
+            if(code==13){
+                if( quanty != ''){
+                    if(!productExist(product)){
+                        subtotal = quanty * parseInt(product.price_1)
+                        $(".row_invoice").append(`
+                            <tr>
+                              <td scope="row">${product.code}</td>
+                              <td>${product.article}</td>
+                              <td>${quanty}</td>
+                              <td>${product.price_1}</td>
+                              <td>${subtotal}</td>
+                            </tr>
+                        `)
+                    }
+                    CalculateTotals()
+                }
+                $(".quanty").val('')
+            }
+            if(code == 102){
+                console.log('Facturando')
+            }
+
+        })
+
+
+
+    })
+
+
+    function productExist(product){
+        var filas = $(".row_invoice").find("tr");
+        result = false;
+        for(i=0; i<filas.length; i++){
+            var celdas = $(filas[i]).find("td");
+            console.log($(celdas[0]).text())
+            if(parseInt($(celdas[0]).text()) == parseInt(product.code)){
+                quanty = parseInt($(".quanty").val()) + parseInt($(celdas[2]).text())
+                subtotal = quanty * parseInt(product.price_1)
+                $(celdas[2]).text(quanty)
+                $(celdas[4]).text(subtotal)
+                result = true
+                break
+            }            
+        }
+        return result
+    }
+
+    function CalculateTotals(){
+        var filas = $(".row_invoice").find("tr");
+        result = false;
+        value = 0
+        for(i=0; i<filas.length; i++){
+            var celdas = $(filas[i]).find("td");
+            value += parseInt($(celdas[4]).text())
+        }
+        $(".subtotal").text(value)
+        $(".total").text(value)
+
+
+    }
+
+
+
+</script>
+
+
+{% endblock %}

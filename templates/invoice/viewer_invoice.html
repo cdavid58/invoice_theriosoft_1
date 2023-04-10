@@ -1,0 +1,305 @@
+{% extends '../base.html' %}
+{% block content %}
+
+<div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Vista Previa de la 
+                	{% if request.session.type_document == 1%}
+                		Factura Electrónica
+                	{% elif request.session.type_document == 4 %}
+                		Documento Soporte
+                	{% endif %}
+                </h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+            </div>
+        </div>
+    </div>
+<section class="section">
+	<div class="row" id="basic-table">
+	    <div class="col-12 col-md-4 " style="text-align: center;">
+	        <div class="card">
+	            <div class="card-header">
+	                <h4 class="card-title">Datos del Cliente</h4>
+	            </div>
+	            <div class="card-content">
+
+	                <!-- Table with no outer spacing -->
+	                <div class="table-responsive">
+	                    <table class="table">
+	                        <tbody>
+	                            <tr>
+	                                <td class="text-bold-500">CC o NIT: {{i2.client.documentI}}-{{i2.client.dv}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td>Razón Social: {{i2.client.name|title}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Dirección: {{i2.client.address|title}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Email: {{i2.client.email}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Teléfono: {{i2.client.phone}}</td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="col-12 col-md-4 ms-md-auto" style="text-align: center;">
+	        <div class="card">
+	            <div class="card-header">
+	                <h4 class="card-title">Datos
+	                	{% if request.session.type_document == 1%}
+	                		de la Factura
+	                	{% elif request.session.type_document == 4 %}
+	                		del Documento Soporte
+	                	{% endif %}
+	                </h4>
+	            </div>
+	            <div class="card-content">
+
+	                <!-- Table with no outer spacing -->
+	                <div class="table-responsive">
+	                    <table class="table">
+	                        <tbody>
+	                            <tr>
+	                                <td class="text-bold-500">Nº de Factura: {{i2.prefix}}-{{i2.number}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td>Fecha Generada: {{i2.date}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Forma de Pago: {% if i2.paymentForm == 1 %}EFECTIVO{% else %}CREDITO{% endif %}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Días de vencimiento: {{i2.durationMeasure}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Total: {{total}}</td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="col-12 col-md-4 ms-auto" style="text-align: center;">
+	        <div class="card">
+	            <div class="card-header">
+	                <h4 class="card-title">Datos de la Compañia</h4>
+	            </div>
+	            <div class="card-content">
+
+	                <!-- Table with no outer spacing -->
+	                <div class="table-responsive">
+	                    <table class="table">
+	                        <tbody>
+	                            <tr>
+	                                <td class="text-bold-500">CC o NIT: {{i2.company.nit}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td>Razón Social: {{i2.company.name_company|title}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Dirección: {{i2.company.address|title}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Email: {{i2.company.email}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td class="text-bold-500">Teléfono: {{i2.company.phone}}</td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</section>
+<section class="section">
+    <div class="row" id="table-head">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-content">
+                	<div class="row p-2">
+	                	<div class="col-10">
+		                    <p>Cufe: {% if i2.cufe %}
+		                    	<a href="https://catalogo-vpfe.dian.gov.co/Document/ShowDocumentToPublic/{{i2.cufe}}" title="ir a la dian" target="_blank">{{i2.cufe}}</a>
+		                    	{% else %}
+		                    		<span style="color:red; font-weight: bold;">{% if request.session.type_document == 1%}
+															                		Factura Electrónica no enviada
+															                	{% elif request.session.type_document == 4 %}
+															                		Documento Soporte no enviado
+															                	{% endif %}  a la DIAN todavía</span>
+		                    	{% endif %}
+		                    </p>
+		                </div>
+		                <div class="col">
+		                    <p>Aceptada por el cliente: {% if i2.acept %}SI{% else %}NO{% endif %}</p>
+		                </div>
+		            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <div class="row" id="table-head">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-content">
+                    <!-- table head dark -->
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th style="width: 1%;text-align: center;">&nbsp;</th>
+                                    <th style="width: 1%;text-align: center;">Código</th>
+                                    <th style="width: 10%;text-align: center;">Descripción</th>
+                                    <th style="width: 1%;text-align: center;">Cantidad</th>
+                                    <th style="width: 1%;text-align: center;">Base</th>
+                                    <th style="width: 2%;text-align: center;">Iva %</th>
+                                    <th style="width: 1%;text-align: center;">Val Iva</th>
+                                    <th style="width: 1%;text-align: center;">Ipo</th>
+                                    <th style="width: 1%;text-align: center;">Descuento</th>
+                                    <th style="width: 1%;text-align: center;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            	{% for i in i1 %}
+	                                <tr>
+	                                    <td class="text-bold-500">
+	                                    	{% if i.state != "Se aplico la nota crédito" %}
+	                                    		<button class="btn btn-primary nc" id="{{i.pk}}">NC</button>
+	                                    	{% else %}
+	                                    		ANULADA
+	                                    	{% endif %}
+	                                    </td>
+	                                    <td class="text-bold-500">{{i.code}}</td>
+	                                    <td style="text-align:center;">{{i.description}}</td>
+	                                    <td style="text-align:right;" class="text-bold-500">{{i.quanty}}</td>
+	                                    <td style="text-align:right;">{{i.SubTotal_Product}}</td>
+	                                    <td style="text-align:right;">{{i.tax}}</td>
+	                                    <td style="text-align:right;">{{i.Tax_Product}}</td>
+	                                    <td style="text-align:right;">{{i.ipo}}</td>
+	                                    <td style="text-align:right;">{{i.discountP}}</td>
+	                                    <td style="text-align:right;">{{i.Total_Product}}</td>
+	                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+	<div class="row" id="basic-table">
+		<div class="col-3 row align-items-center">
+	        <div class="card">
+	            <div class="card-content">
+	                <div class="table-responsive">
+	                    <table class="table">
+						<thead>
+							<tr>
+								<th style="text-align:center;">IMPUESTO</th>
+								<th style="text-align:center;">%</th>
+								<th style="text-align:center;">VALOR</th>
+								<th style="text-align:center;">BASE</th>
+								
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>IVA</td>
+								<td>19%</td>
+								<td style="text-align: right;">$ {{iva19.19}}</td>
+								<td style="text-align: right;">$ {{iva19.base}}</td>
+							</tr>
+							<tr>
+								<td>IVA</td>
+								<td>5%</td>
+								<td style="text-align: right;">$ {{iva5.5}}</td>
+								<td style="text-align: right;">$ {{iva5.base}}</td>
+							</tr>
+							<tr>
+								<td>IVA</td>
+								<td>0%</td>
+								<td style="text-align: right;">$ {{iva0.0}}</td>
+								<td style="text-align: right;">$ {{iva0.base}}</td>
+							</tr>
+						</tbody>
+					</table>
+	                </div>
+	            </div>
+	        </div>
+        	
+        </div>
+	    <div class="col-12 col-md-4 ms-md-auto" style="text-align: center;">
+	        <div class="card">
+	            <div class="card-header">
+	                <h4 class="card-title">Totales</h4>
+	            </div>
+	            <div class="card-content">
+	                <!-- Table with no outer spacing -->
+	                
+	                <div class="table-responsive">
+	                    <table class="table">
+	                        <tbody>
+	                            <tr>
+	                                <td style="text-align:left;" class="text-bold-500">SubTotal:</td>
+	                                <td style="text-align:right;">{{sub}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td style="text-align:left;" class="text-bold-500">Impuestos:</td>
+	                                <td style="text-align:right;">{{tax}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td style="text-align:left;" class="text-bold-500">IC:</td>
+	                                <td style="text-align:right;">{{ic}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td style="text-align:left;" class="text-bold-500">Retenciones:</td>
+	                                <td style="text-align:right;">{{rete}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td style="text-align:left;" class="text-bold-500">Descuento:</td>
+	                                <td style="text-align:right;">{{discount}}</td>
+	                            </tr>
+	                            <tr>
+	                                <td style="text-align:left;" class="text-bold-500">Total:</td>
+	                                <td style="text-align:right;">{{total}}</td>
+	                            </tr>
+	                        </tbody>
+	                    </table>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</section>
+<br><br>
+{% endblock %}
+{% block script %}
+	<script>
+		$(".fact").click(function(){
+			$(".pdf").css('display','block');
+		});
+
+		$(document).ready(function(){
+			$(document).on('click','nc',function(){
+				id = this.id
+				alert("Aplicando notacredito")
+			})
+		})
+	</script>
+{% endblock %}

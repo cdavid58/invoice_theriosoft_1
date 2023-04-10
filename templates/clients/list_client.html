@@ -1,0 +1,84 @@
+{% extends '../base.html' %}
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Lista de Clientes</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first"></div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <table id="example" class="table table-striped" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Documento I</th>
+                            <th>Razón Social</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                            <th>Correo Elect.</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in client %}
+                            <tr>
+                                <td>{{i.documentI}}</td>
+                                <td>{{i.name}}</td>
+                                <td>{{i.address}}</td>
+                                <td>{{i.phone}}</td>
+                                <td>{{i.email}}</td>
+                                <td>
+                                	<button class="btn btn-primary edit" id="{{i.pk}}">Editar</button>
+                                	<button class="btn btn-danger delete" id="{{i.pk}}">Eliminar</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+
+{% endblock %}
+{% block script %}
+
+	<script>
+		$(document).ready(function(){
+
+			$(".edit").click(function(){
+				location.href = "http://localhost:8000/client/Edit_Client/"+this.id
+			})
+			
+			$(".delete").click(function(){
+				id = this.id
+				$(this).closest('tr').remove();
+				$.ajax({
+					url:"{% url 'Delete_Client' %}",
+					data:{'pk':id},
+					success:function(e){
+						if(e == 'True'){
+							$.gritter.add({
+			                    title: 'Exito',
+			                    text: 'Cliente eliminado con exito',
+			                    time: 3000,
+			                    position: 'center'
+			                })
+						}
+					}
+				})
+			})
+
+
+
+		})
+	</script>
+
+{% endblock %}

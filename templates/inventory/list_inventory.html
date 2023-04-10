@@ -1,0 +1,77 @@
+{% extends '../base.html' %}
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Lista de Inventario</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <button class="btn btn-primary add">
+                    Agregar producto
+                </button>
+            </div>
+        </div>
+    </div><br>
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <table id="example" class="table table-striped" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Cod Int</th>
+                            <th>Producto</th>
+                            <th>Costo</th>
+                            <th>Precio 1</th>
+                            <th>Precio 2</th>
+                            <th>Precio 3</th>
+                            <th>Precio 4</th>
+                            <th>Precio 5</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in inventory %}
+                            <tr>
+                                <td>{{i.code}}</td>
+                                <td>{{i.code_int}}</td>
+                                <td>{{i.article}}</td>
+                                <td>{{i.cost}}</td>
+                                <td>{{i.price_1}}</td>
+                                <td>{{i.price_2}}</td>
+                                <td>{{i.price_3}}</td>
+                                <td>{{i.price_4}}</td>
+                                <td>{{i.price_5}}</td>
+                                <td>
+                                    <button class="btn btn-primary">
+                                        Editar
+                                    </button>
+                                    <button class="btn btn-danger">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+
+{% endblock %}
+{% block script %}
+
+	<script>
+		$(document).ready(function(){
+			$(".add").click(function(){
+                location.href = "{% url 'Add_Product' %}"
+            })
+		})
+	</script>
+
+{% endblock %}

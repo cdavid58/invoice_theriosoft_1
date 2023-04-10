@@ -1,0 +1,213 @@
+{% extends '../base.html' %}
+{% block style %}
+	<style>
+		#one
+		{
+		  margin-top:50px;
+		 box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.2);
+		}
+		.it .btn-orange
+		{
+			background-color: transparent;
+			border-color: #777!important;
+			color: #777;
+			text-align: left;
+		  width:100%;
+		}
+		.it input.form-control
+		{
+			height: 54px;
+			border:none;
+		  margin-bottom:0px;
+			border-radius: 0px;
+			border-bottom: 1px solid #ddd;
+			box-shadow: none;
+		}
+		.it .form-control:focus
+		{
+			border-color: #ff4d0d;
+			box-shadow: none;
+			outline: none;
+		}
+		.fileUpload {
+		    position: relative;
+		    overflow: hidden;
+		    margin: 10px;
+		}
+		.fileUpload input.upload {
+		    position: absolute;
+		    top: 0;
+		    right: 0;
+		    margin: 0;
+		    padding: 0;
+		    font-size: 20px;
+		    cursor: pointer;
+		    opacity: 0;
+		    filter: alpha(opacity=0);
+		}
+		.it .btn-new, .it .btn-next
+		{
+			margin: 30px 0px;
+			border-radius: 0px;
+			background-color: #333;
+			color: #f5f5f5;
+			font-size: 16px;
+			width: 200px;
+		}
+		.it .btn-next
+		{
+			background-color: #ff4d0d;
+			color: #fff;
+		}
+		.it .btn-check
+		{
+		  cursor:pointer;
+		  line-height:54px;
+		  color:red;
+		}
+		.it .uploadDoc
+		{
+			margin-bottom: 20px;
+		}
+		.it .uploadDoc
+		{
+			margin-bottom: 20px;
+		}
+		.it .btn-orange img {
+		    width: 30px;
+		}
+		p
+		{
+		  font-size:16px;
+		  text-align:center;
+		  margin:30px 0px;
+		}
+		.it #uploader .docErr
+		{
+			position: absolute;
+		    right:auto;
+		    left: 10px;
+		    top: -56px;
+		    padding: 10px;
+		    font-size: 15px;
+		    background-color: #fff;
+		    color: red;
+		    box-shadow: 0px 0px 7px 2px rgba(0,0,0,0.2);
+		    display: none;
+		}
+		.it #uploader .docErr:after
+		{
+			content: '\f0d7';
+			display: inline-block;
+			font-family: FontAwesome;
+			font-size: 50px;
+			color: #fff;
+			position: absolute;
+			left: 30px;
+			bottom: -40px;
+			text-shadow: 0px 3px 6px rgba(0,0,0,0.2);
+		}
+	</style>
+{% endblock %}
+{% load static %}
+{% block content %}
+
+
+
+
+<div class="container">
+	<div class="row justify-content-center it">
+		<div class="col-sm-offset-1 col-sm-10" id="one">
+			<p>
+			POR FAVOR SOLO SUBIR DOCUMENTOS EN FORMATO XLS.<br>
+			ESTE ARCHIVO VA A SOBRESCRIBIR EL DOCUMENTO QUE YA ESTA ALMACENADO.
+			</p><br>
+			<form id="myForm" method="post" enctype="multipart/form-data">{% csrf_token %}
+				<div id="uploader">
+					<div class="row justify-content-center uploadDoc">
+					  <div class="col-md-6 col-12">
+					    <div class="docErr">Please upload valid file</div><!--error-->
+					    <div class="fileUpload btn btn-orange">
+					      <img src="https://w7.pngwing.com/pngs/348/235/png-transparent-microsoft-excel-computer-icons-microsoft-template-angle-text.png" class="icon">
+					      <span class="upl" id="upload">Seleccionar el documento</span>
+					      <input type="file" name="files" class="upload up" id="up" accept=".xlsx, .xls">
+					    </div>
+					  </div>
+					  <div class="col-sm-1"><a class="btn-check"><i class="fa fa-times"></i></a></div><!-- col-1 -->
+					</div><!--row-->
+				</div><!--uploader-->
+				<div class="row justify-content-center" class="text-center">
+					<div class="col text-center">
+						<button type="button" class="btn btn-next cancel"><i class="bi bi-cursor-fill"></i> Cancelar</button>
+					</div>
+					<div class="col text-center">
+						<button type="submit" class="btn btn-next btn-send-doc"><i class="bi bi-cursor-fill"></i> Subir Documento</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+	$(".cancel").click(function(){
+		location.reload(true);
+	});
+	var fileTypes = ['xls'];  //acceptable file types
+	function readURL(input) {
+	    if (input.files && input.files[0]) {
+	        var extension = input.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+	            isSuccess = fileTypes.indexOf(extension) > -1;  //is extension in acceptable types
+	        if (isSuccess) { //yes
+	            var reader = new FileReader();
+	            console.log(extension)
+	            reader.onload = function (e) {
+	                if (extension == 'xls' || extension == 'xlsx'){
+	                	$(input).closest('.fileUpload').find(".icon").attr('src','https://w7.pngwing.com/pngs/348/235/png-transparent-microsoft-excel-computer-icons-microsoft-template-angle-text.png');
+	                	$(".btn-next").attr("disabled",false);
+	                }
+	                else {
+	                	$(input).closest('.uploadDoc').find(".docErr").slideUp('slow');
+	                }
+	            }
+
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	        else {
+
+	        	console.log('here=>'+$(input).closest('.uploadDoc').find(".docErr").length);
+	        	$(input).closest('.fileUpload').find(".icon").attr('src','https://w7.pngwing.com/pngs/348/235/png-transparent-microsoft-excel-computer-icons-microsoft-template-angle-text.png');
+	        	$(".btn-send-doc").attr("disabled",true);
+	            $(input).closest('.uploadDoc').find(".docErr").fadeIn();
+	            setTimeout(function() {
+					   	$('.docErr').fadeOut('slow');
+						}, 9000);
+	        }
+	    }
+	}
+	$(document).ready(function(){
+	   
+	   $(document).on('change','.up', function(){
+	   	var id = $(this).attr('id'); /* gets the filepath and filename from the input */
+		   var profilePicValue = $(this).val();
+		   var fileNameStart = profilePicValue.lastIndexOf('\\'); /* finds the end of the filepath */
+		   profilePicValue = profilePicValue.substr(fileNameStart + 1).substring(0,20); /* isolates the filename */
+		   //var profilePicLabelText = $(".upl"); /* finds the label text */
+		   if (profilePicValue != '') {
+		   	//console.log($(this).closest('.fileUpload').find('.upl').length);
+		      $(this).closest('.fileUpload').find('.upl').html(profilePicValue); /* changes the label text */
+		   }
+	   });
+	    
+	   $(document).on("click", "a.btn-check" , function() {
+	     if($(".uploadDoc").length>1){
+	        $(this).closest(".uploadDoc").remove();
+	      }else{
+	        alert("You have to upload at least one document.");
+	      } 
+	   });
+	});
+</script>
+{% endblock %}

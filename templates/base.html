@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facturación Electrónica</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/iconly/bold.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/sweetalert2/sweetalert2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/bootstrap-icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/app.css' %}">
+    <link rel="shortcut icon" href="{% static 'home/img/favicon.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.jqueryscript.net/demo/Classic-Growl-like-Notification-Plugin-For-jQuery-Gritter/css/jquery.gritter.css">
+    {% block style %}{% endblock %}
+</head>
+<body>
+    <div id="app">
+        {% include './slider.html' %}
+        <div id="main">
+            <header>
+                <div class="container-fluid">
+                    <a href="javascript:void(0);" class="burger-btn d-block">
+                        <i class="bi bi-justify fs-3"></i>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+            </header>            
+            <div class="page-content">
+                {% block content %}{% endblock %}
+            </div>
+            <footer>
+                <div class="footer clearfix mb-0 text-muted">
+                    <div class="float-start">
+                        <p>&copy; <script>document.write(new Date().getFullYear());</script> - Copyright | Facturacion Electrónica - Versión 2.0</p>
+                    </div>
+                    <div class="float-end">
+                        <p>Desarrollado <span class="text-danger"></span> por <a href="https://theriosoft.com">Theriosoft s.a.s</a></p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+
+    <script src="{% static 'assets/vendors/apexcharts/apexcharts.js' %}"></script>
+    <script src="{% static 'assets/js/pages/dashboard.js' %}"></script>
+
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <script src="{% static 'assets/js/extensions/sweetalert2.js' %}"></script>
+    <script src="{% static 'assets/vendors/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>
+    <script src="https://www.jqueryscript.net/demo/Classic-Growl-like-Notification-Plugin-For-jQuery-Gritter/js/jquery.gritter.js"></script>
+
+    
+    {% block script %}{% endblock %}
+    <script>
+
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+
+        $(document).ready(function(){
+            
+            var settings = {
+              "url": "http://localhost:8000/api/Resolutions_days/",
+              "method": "GET",
+              "timeout": 0,
+            }
+
+            $.ajax(settings).done(function(response){
+              if(!response.result){
+                $(".invoice_elect").hide()
+                $.gritter.add({
+                    title: 'ALERTA',
+                    text: 'Tiene la resolución esta vencida, por eso no puede usar facturacion electronica!',
+                    time: 3000,
+                    position: 'center'
+                });
+                localStorage.setItem('resolution', response.result);
+              }
+              else{
+                console.log("Eliminado")
+                localStorage.removeItem('resolution')
+              }
+            })            
+        })
+    </script>
+
+    
+
+
+</body>
+
+</html>

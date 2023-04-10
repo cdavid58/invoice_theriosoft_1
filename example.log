@@ -1,0 +1,38 @@
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): localhost:80
+DEBUG:urllib3.connectionpool:http://localhost:80 "POST /api/public/api/ubl2.1/invoice HTTP/1.1" 422 None
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+WARNING:django.request:Not Found: /favicon.ico
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): localhost:80
+DEBUG:urllib3.connectionpool:http://localhost:80 "POST /api/public/api/ubl2.1/invoice HTTP/1.1" 422 None
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\emails\send_email.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+WARNING:django.request:Not Found: /favicon.ico
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\api\views.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+WARNING:django.request:Not Found: /favicon.ico
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): localhost:80
+DEBUG:urllib3.connectionpool:http://localhost:80 "POST /api/public/api/ubl2.1/invoice HTTP/1.1" 200 None
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): localhost:80
+DEBUG:urllib3.connectionpool:http://localhost:80 "POST /api/public/api/ubl2.1/send-event HTTP/1.1" 200 None
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\emails\send_email.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\api\views.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+WARNING:django.request:Not Found: /favicon.ico
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector
+INFO:django.utils.autoreload:C:\Users\Desarrollo2\Desktop\Project\invoice\operations.py changed, reloading.
+DEBUG:asyncio:Using selector: SelectSelector

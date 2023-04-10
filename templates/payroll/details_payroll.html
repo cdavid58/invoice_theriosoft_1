@@ -1,0 +1,77 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Detalle de la Nomina del Mes de {{month}}</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-body" onfocus style="overflow-y:scroll;height: 700px; width: 100%;">
+                <table class="table table-striped" id="tr1">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;" class="col">Documento de Identidad</th>
+                            <th style="text-align: center;" class="col">Apellido y Nombre</th>
+                            <th style="text-align: center;" class="col">Salario Mensual</th>
+                            <th style="text-align: center;" class="col">Total Nomina</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    	{% for i in data %}
+	                        <tr>
+	                            <td style="text-align: center;">{{i.documentI}}</td>
+	                            <td style="text-align: center;">{{i.surname}}</td>
+	                            <td style="text-align: right;">{{i.salaryM|floatformat:-2}}</td>
+                                <td style="text-align: right;">{{i.total|floatformat:-2}}</td>           
+	                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+
+
+<div class="page-heading">
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+            	<div class="row">
+            		<button type="button" class="btn btn-lg btn-outline-primary send_payroll">Enviar a la DIAN</button>
+            	</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+{% block script %}
+    <!-- <script src="{% static 'assets/vendors/jquery/jquery.min.js' %}"></script> -->
+	<script>
+        
+		location.href ="#tr1";
+        $(document).ready(function(){
+            $(".send_payroll").click(function(){
+                $.ajax({
+                    url: "{% url 'SendPayroll' %}",
+                    success: function(e){
+                        console.log("Listo")
+                    }
+                })
+
+            })
+        })
+	</script>
+
+{% endblock %}

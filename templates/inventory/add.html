@@ -1,0 +1,149 @@
+{% extends '../base.html' %}
+{% block content %}
+<form class="form">
+	<section id="multiple-addons">
+	    <div class="row">
+	        <div class="col-12">
+	            <div class="card">
+	                <div class="card-content">
+	                    <div class="card-body">
+	                    	<div class="row justify-content-center">
+	                    		<h4 class="text-center">Agrega un producto</h4><hr>
+	                    	</div>
+	                    	<br>
+	                        <div class="row ">
+	                            <div class="col-sm-2 mb-1">
+	                                <div class="input-group mb-3">
+	                                    <span class="input-group-text">Código</span>
+	                                    <input type="text"  name="docI" class="form-control">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-3 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Nombre</span>
+	                                    <input type="text"  name="name" class="form-control">
+
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-2 mb-1">
+	                                <div class="input-group mb-3">
+	                                    <span class="input-group-text">Cantidad</span>
+	                                    <input type="text" class="form-control" name="address">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-3 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Categoria</span>
+	                                	<select class="form-select payment_methods" name="municipality">
+	                                    	<option>Seleccione</option>
+	                                    	{% for i in category %}
+	                                    		<option value="{{i.pk}}">{{i.name}}</option>
+	                                    	{% endfor %}
+	                                    </select>
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-1 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">IVA</span>
+	                                	<select class="form-select payment_methods" name="municipality">
+	                                    	<option>0</option>
+	                                    	<option>5</option>
+	                                    	<option>19</option>
+	                                    </select>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="row justify-content-center">
+	                            <div class="col-sm-2 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Costo</span>
+	                                    <input type="text" class="form-control" name="email" value="{{c.email}}">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-2 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Precio 1</span>
+	                                    <input type="text" class="form-control" name="email" value="{{c.email}}">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-2 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Precio 2</span>
+	                                    <input type="text" class="form-control" name="email" value="{{c.email}}">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-2 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Precio 3</span>
+	                                    <input type="text" class="form-control" name="email" value="{{c.email}}">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-2 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Precio 4</span>
+	                                    <input type="text" class="form-control" name="email" value="{{c.email}}">
+	                                </div>
+	                            </div>
+	                            <div class="col-sm-2 mb-1">
+	                                <div class="input-group">
+	                                    <span class="input-group-text">Precio 5</span>
+	                                    <input type="text" class="form-control" name="email" value="{{c.email}}">
+	                                </div>
+	                            </div>
+	                        </div><br>
+	                        <div class="row">
+						    	<div class="col-2">
+						    		<button type="button" class="btn btn-primary update">Grabar producto</button>
+						    	</div>
+						    	<div class="col-2">
+						    		<button type="button" class="btn btn-danger return">Lista de producto</button>
+						    	</div>
+						    </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</section>
+</form>
+{% endblock %}
+{% block script %}
+
+	<script>
+		$(document).ready(function(){
+
+			$(".return").click(function(){
+				location.href = "{% url 'List_Inventory' %}"
+			})
+
+			$(".update").click(function(){
+				form = $(".form").serialize()
+				$.ajax({
+					url:"{% url 'Update_Client' %}",
+					data:form,
+					success: function(e){
+						if(e == 'True'){
+							$.gritter.add({
+			                    title: 'Exito',
+			                    text: 'Cliente actualizado con exito',
+			                    time: 3000,
+			                    position: 'center'
+			                })
+						}
+						else{
+							$.gritter.add({
+			                    title: 'Oops!',
+			                    text: 'Corrija los errores',
+			                    time: 3000,
+			                    position: 'center'
+			                })
+						}
+					}
+				})
+			})
+		})
+	</script>
+
+{% endblock %}
+
+

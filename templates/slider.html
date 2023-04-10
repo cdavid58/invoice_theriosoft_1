@@ -1,0 +1,137 @@
+{% load static %}
+<div id="sidebar" class="">
+    <div class="sidebar-wrapper active">
+       <div class="sidebar-header">
+                <div class="d-flex justify-content-between">
+                    <div class="logo">
+                        <a href=""><img src="{{request.session.img}}" style="width: 80%;" alt="Logo" srcset=""></a>
+                    </div>
+                    <div class="toggler">
+                        <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                    </div>
+                </div>
+            </div>
+        <div class="sidebar-menu">
+            <ul class="menu">
+            <li class="sidebar-title">Bienvenido <br>{{request.session.name}}<hr></li>
+            <li class="sidebar-title">Menu</li>
+            {% if request.session.type_user == 1 or request.session.type_user == 2 %}
+                <li class="sidebar-item  has-sub">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-file-earmark-medical-fill"></i>
+                        
+                        <span>Crear Documentos</span>
+                    </a>
+                    <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a href="{% url 'Create_Order' %}" class="">Factura Electrónica</a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a href="javascript:void(0);">Nomina Electrónica</a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a href="{% url 'Create_DS' %}">Documento Soporte</a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+                <li class="sidebar-item  has-sub">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-stack"></i>
+                        
+                        <span>Documentos Generados</span>
+                    </a>
+                    <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a href="{% url 'List_Invoice' %}" class="">Factura Electrónica</a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a href="">Nomina Electrónica</a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a href="{% url 'List_Support_Document' %}">Documento Soporte</a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a href="">Nota Crédito</a>
+                        </li>
+                    </ul>
+                </li>
+            {% if request.session.type_user == 1 or request.session.type_user == 2 %}
+                <li class="sidebar-item invoice_elect">
+                    <a href="{% url 'List_Inventory' %}" class='sidebar-link'>
+                        <i class="bi bi-file-earmark-medical-fill"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                {% if request.session.type_user == 1 %}
+                    <li class="sidebar-item  has-sub">
+                        <a href="#" class='sidebar-link'>
+                            <i class="bi bi-collection-fill"></i>
+                            <span>Nómina Electrónica</span>
+                        </a>
+                        <ul class="submenu ">
+                            <li class="submenu-item ">
+                                <a href="{% url 'Upload' %}">Cargar Nómina</a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a href="">Detalle Nómina</a>
+                            </li>
+                            <li class="submenu-item ">
+                                <a href="" download="Nomina.xls">Descargar Patrón</a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
+                <li class="sidebar-item ">
+                    <a href="{% url 'List_Client' %}" class='sidebar-link'>
+                        <i class="bi bi-file-earmark-medical-fill"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                {% if request.session.type_user == 1 %}
+                    <li class="sidebar-item">
+                        <a href="{% url 'List_Employee' %}" class='sidebar-link'>
+                            <i class="bi bi-collection-fill"></i>
+                            <span>Empleados</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item ">
+                        <a href="" class='sidebar-link'>
+                            <i class="bi bi-file-earmark-medical-fill"></i>
+                            <span>Respaldo de Facturas</span>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endif %}
+            {% if request.session.type_user == 1 or request.session.type_user == 3 %}
+                <li class="sidebar-item  has-sub">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-collection-fill"></i>
+                        <span>Reportes</span>
+                    </a>
+                    <ul class="submenu ">
+                        <li class="submenu-item ">
+                            <a href="">Reporte por Factura</a>
+                        </li>
+                        <li class="submenu-item ">
+                            <a class="download_pdf" href="#">Descargar Facturas</a>
+                            <a href="{% static request.session.company %}.zip" class="qwe" id="qwe" download="{{request.session.company}}.zip"></a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+
+            <li class="sidebar-title">Opciones</li>
+            <li class="sidebar-item ">
+                <a href="{% url 'LogOut' %}" class='sidebar-link'>
+                    <i class="bi bi-person-badge-fill"></i>
+                    <span>Salir</span>
+                </a>
+            </li>    
+        </div>
+        <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+    </div>
+</div>
+
+
+

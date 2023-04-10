@@ -1,0 +1,259 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Listado de Documento Soporte</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <table id="example" class="display compact" style="width: 100%;">
+                  <thead>
+                      <tr>
+                          <th style="width:5%;">Prefijo</th>
+                          <th style="width:5%;">Numero</th>
+                          <th>Cliente</th>
+                          <th style="width:7%;">Fecha</th>
+                          <th style="width:7%;">Total F.</th>
+                          <th>Estado</th>
+                          <th style="width:23%;">Accion</th>
+                      </tr>
+                  </thead>
+                </table>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+{% endblock %}
+{% block script %}
+
+	<script>
+		$(document).ready(function(){
+
+			$("#example").dataTable({
+		    language: {
+		        search: 'Buscar Factura',
+		        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json',
+		    },
+		    pagingType: 'simple_numbers',
+		    processing: true,
+		    ajax: {
+		      serverSide: true,
+		      url: "http://localhost:8000/api/GetListInvoice/",
+		      type:"GET",
+              data:{"type_document": 11},
+		      dataSrc: ''
+		    },
+		    columns: [
+		        {
+		          "data": "prefix"
+		        },
+		        {
+		            "render": function ( data, type, row, meta ) {
+		                return `
+		                    <p style="text-align: center !important; margin-top:15px !important;">${row.number}</p>
+		                `;
+		            }
+		        }, 
+		        {
+		          "data": "client"
+		        }, 
+		        {
+		          "data": "date"
+		        },
+		        {
+		          "render": function ( data, type, row, meta ) {
+		                return `
+		                    <p style="text-align: center !important; margin-top:15px !important;">$${row.total}</p>
+		                `;
+		            }
+		        },
+		        {
+		            "render": function ( data, type, row, meta ) {
+		                return `
+		                    <span id="state${row.number}">${row.state}</span>
+		                `;
+		            }
+		        },
+		        {
+		            "render": function ( data, type, row, meta ) {
+		              return `<div id="before${row.number}" style="width: 100%;">
+                                <a class="btn btn-primary" href="http://localhost:8000/order/Viewer_Invoice/${row.number}">
+                                    Ver
+                                </a>
+		                        ${
+		                            (row.state  !== "Procesado Correctamente." && !row.state.includes("anteriormente") && row.state  !== "Se aplico la nota crédito") ?
+		                                `<btn class="dian btn btn-warning"  data-toggle="tooltip" title="Some tooltip text!" id="${row.number}">
+		                                    DIAN
+		                                 </btn>
+		                                 <button class="dian btn btn-danger"  data-toggle="tooltip" title="Some tooltip text!" id="${row.number}">
+		                                    Eliminar
+		                                 </button>
+		                              `:
+		                              (row.state  !== "Se aplico la nota crédito") ?
+		                                  ` <btn class="credit_note btn btn-danger" id="${row.number}">
+		                                        Nota Créd
+		                                    </btn>
+		                                    <a class="btn btn-success" href="https://catalogo-vpfe.dian.gov.co/Document/ShowDocumentToPublic/${row.cufe}" target="_blank">
+		                                        Verificar
+		                                    </a>
+		                                    <a class="btn btn-info" href="http://localhost:8000/api/View_PDF/${row.number}" target="_blank">
+		                                        PDF
+		                                     </a>
+		                                    `
+		                                :
+		                                    `
+		                                     <a class="btn btn-info" href="http://localhost:8000/api/View_PDF/${row.number}" target="_blank">
+		                                        PDF
+		                                     </a>
+		                                     <a class="btn btn-success" href="https://catalogo-vpfe.dian.gov.co/Document/ShowDocumentToPublic/${row.cufe}" target="_blank">
+		                                        Verificar
+		                                     </a>
+		                                    `
+		                        }
+		                    </div>
+		                    `;
+		                      
+		            }
+		        }
+		    ],
+		    order: [[1, 'desc']]
+		  });
+
+        	$(document).on('click','.credit_note',function(){
+                if(!localStorage.getItem('resolution')){
+                    id = this.id
+                    $("#state"+id).text("Enviado la nota crédito...")
+                    $.gritter.add({
+                        title: 'Mensaje',
+                        text: 'Estamos enviando la nota crédito',
+                        time: 2000,
+                        position: 'center'
+                    });
+                    $.ajax({
+                        url:"{% url 'Credit_Note' %}",
+                        data:{'number':id}
+                    }).done( function(data) {
+                        $.gritter.add({
+                            title: 'ÉXITOSO',
+                            text: `La Nota crédito ${id} fué enviada con éxito!`,
+                            time: 2000,
+                            position: 'center'
+                        });
+                        _data = JSON.parse(data)
+                        obj = JSON.stringify(_data)
+                        _obj = JSON.parse(obj)
+                        $("#state"+id).text(_obj.result)
+                        if(_obj.result === "Se aplico la nota crédito"){
+                            $("#before"+id).empty()
+                            $("#before"+id).append(`
+                                <a class="btn btn-primary" href="http://localhost:8000/order/Viewer_Invoice/${id}">
+                                    Ver
+                                </a>
+                                <a class="btn btn-info" href="http://localhost:8000/api/View_PDF/${id}" target="_blank">
+                                    PDF
+                                </a>
+                                <a class="btn btn-success" href="https://catalogo-vpfe.dian.gov.co/Document/ShowDocumentToPublic/${_obj.cufe}" target="_blank">
+                                    Verificar
+                                </a>                                
+                            `)
+                        }
+
+                    }).fail( function() {
+                        $.gritter.add({
+                            title: 'Oops',
+                            text: `Hubo un problema con la nota crédito`,
+                            time: 2000,
+                            position: 'center'
+                        });
+                    });
+                }
+                else{
+                    $.gritter.add({
+                        title: 'ALERTA',
+                        text: 'Tiene la resolución esta vencida, por eso no puede usar nota crédito!',
+                        time: 3000,
+                        position: 'center'
+                    });
+                }
+            })
+
+            $(document).on('click','.dian',function(){
+                if(!localStorage.getItem('resolution')){
+                    id = this.id
+                    $("#state"+id).text("Enviado la factura...")
+                    $.gritter.add({
+                        title: 'Mensaje',
+                        text: 'Estamos enviando la factura electrónica',
+                        time: 2000,
+                        position: 'center'
+                    });
+                    $.ajax({
+                        url:"{% url 'Send_DIAN' %}",
+                        data:{'number':id,'type_document': 11}
+                    }).done( function(data) {
+                        $.gritter.add({
+                            title: 'ÉXITOSO',
+                            text: `La Factura electrónica ${id} fué enviada con éxito!`,
+                            time: 2000,
+                            position: 'center'
+                        });
+                        _data = JSON.parse(data)
+                        obj = JSON.stringify(_data)
+                        _obj = JSON.parse(obj)
+                        $("#state"+id).text(_obj.result)
+                        if(_obj.result === "Procesado Correctamente."){
+                            $("#before"+id).empty()
+                            $("#before"+id).append(`
+                                
+                                <btn class="credit_note btn btn-danger" id="${id}">
+                                    Nota Créd
+                                </btn>
+                                <a class="btn btn-success" href="https://catalogo-vpfe.dian.gov.co/Document/ShowDocumentToPublic/${_obj.cufe}" target="_blank">
+                                    Verificar
+                                </a>
+                                <a class="btn btn-info" href="http://localhost:8000/api/View_PDF/${id}" target="_blank">
+                                    PDF
+                                 </a>
+                                 <btn class="btn btn-primary" href="javascript:void(0);">
+                                    Ver
+                                </btn>
+                            `)
+                        }
+
+
+
+
+                    }).fail( function() {
+                        $.gritter.add({
+                            title: 'Oops',
+                            text: `Hubo un problema con la factura`,
+                            time: 2000,
+                            position: 'center'
+                        });
+                    });
+                }
+                else{
+                    $.gritter.add({
+                        title: 'ALERTA',
+                        text: 'Tiene la resolución esta vencida, por eso no puede usar facturacion electronica!',
+                        time: 3000,
+                        position: 'center'
+                    });
+                }
+            })
+
+		})
+	</script>
+
+{% endblock %}

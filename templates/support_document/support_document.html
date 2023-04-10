@@ -1,0 +1,233 @@
+{% extends '../base.html' %}
+{% block content %}
+
+<style>
+    .div1 {
+         overflow:scroll;
+         height:400px;
+         width:100%;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+    input[type=number] { -moz-appearance:textfield; }
+</style>
+
+<section id="multiple-addons">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+            	<div class="card-header">
+                    <h4 class="card-title">Crear Documento Soporte</h4>
+            	</div>
+                <div class="card-content">
+                    <div class="card-body">
+                    	<div class="row justify-content-center">
+                    		<h4 class="text-center">Información del cliente</h4><hr>
+                    	</div>
+                    	<br>
+                        <div class="row ">
+                            <div class="col-sm-3 mb-1">
+                                <div class="input-group mb-3">
+                                    <select class="form-select employee">
+                                    	<option>Elija el cliente</option>
+                                    	{% for i in client %}
+                                            <option value="{{i.pk}}">{{i.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 mb-1">
+                                <div class="input-group">
+                                    <span class="input-group-text">Doc de Identidad</span>
+                                    <input type="text"  id="docI" class="form-control" disabled>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-5 mb-1">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">Email</span>
+                                    <input type="text" class="form-control" id="email" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            
+                            <div class="col-sm-3 mb-1">
+                                <div class="input-group">
+                                    <span class="input-group-text">Teléfono</span>
+                                    <input type="text"  id="phone" class="form-control" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-1">
+                                <div class="input-group">
+                                    <span class="input-group-text">Domicilio</span>
+                                    <input type="text" class="form-control" id="address"  data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Editar Empleado" disabled>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-3 mb-1">
+                                <div class="input-group">
+                                	<select class="form-select">
+                                    	<option>Elija el Método de Pago</option>
+                                    	<option>Transferencia Débito</option>
+                                    	<option>Efectivo</option>
+                                    	<option>Consiganción bancaria</option>
+                                    	<option>Cheque bancario</option>
+                                    	<option>Transferecia Crédito</option>
+                                    	<option>Acuerdo mutuo</option>
+                                    	<option>Transferencia Débito Bancaria</option>
+                                    	<option>Pago y depósito pre acordado (PPD)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Documento Soporte N° 1 &nbsp;&nbsp;&nbsp;{{c.number}}</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+            </div>
+        </div>
+    </div>
+<form method="post" id="myForm" action="">{% csrf_token %}
+        <section class="section">
+            <div class="card">
+                <div class="card-body div1">
+                    <table class="table table-sm table-striped" id="">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;" class="col">Código</th>
+                                <th style="text-align: center;" class="col">Descripción</th>
+                                <th style="text-align: center;" class="col">Cantidad</th>
+                                <th style="text-align: center;" class="col">Precio</th>
+                                <th style="text-align: center;" class="col">Iva</th>
+                                <th style="text-align: center;" class="col">Rete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="father">
+                            <tr>
+                                <td style="text-align: center;"><input type="number" value="1" name="code"></td>
+                                <td style="text-align: center;" >
+                                    <input type="text" autofocus class="form-control" name="description">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control" name="quanty">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control" name="price">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control" name="iva">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="number" class="form-control" name="rete">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="page-heading">
+        <section class="section">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-3">
+                            <a href="javascript:void(0);" type="reset" class="btn btn-lg btn-outline-danger">Cancelar</a>
+                        </div>
+                        <div class="col-3">
+                            <a href="javascript:void(0);" id="send" class="btn btn-lg btn-outline-success">Grabar</a>
+                        </div>
+                        <div class="col-3">
+                            <a href="javascript:void(0);" id="add" class="btn btn-lg btn-outline-primary">Agregar otro articulo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+    $("#send").click(function(e){
+        $("#myForm").submit();
+    });
+
+    function cancel(e){
+        e.preventDefault();
+        $('#father').empty(); 
+        count = 1;
+        return false;
+    }
+    var count = 2;
+    $("#add").click(function(e){
+        e.preventDefault();
+        $("#father").append(`
+            <tr>
+                <td style="text-align: center;"><input type="number" value="${count}" name="code"></td>
+                <td style="text-align: center;" >
+                    <input type="text" autofocus class="form-control" name="description">
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" class="form-control" name="quanty">
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" class="form-control" name="price">
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" class="form-control" name="iva">
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" class="form-control" name="rete">
+                </td>
+            </tr>
+        `);
+        $("#father").focus();
+        count++;
+    });
+
+
+    $(".employee").change(function(){
+        var value = $(".employee").val();
+        $.ajax({
+            url:'{% url "GetClient" %}',
+            data:{'pk':value},
+            success:function(data){
+                var obj = JSON.parse(data);
+                $("#docI").val(obj['documentI']);
+                $("#email").val(obj['email']);
+                $("#phone").val(obj['phone']);
+                $("#address").val(obj['address']);
+            }
+        });
+    })
+
+
+
+
+</script>
+
+
+{% endblock %}
